@@ -125,8 +125,7 @@ def optimize(content_targets, style_target, content_weight, style_weight,
                 train_step.run(feed_dict=feed_dict)
                 end_time = time.time()
                 delta_time = end_time - start_time
-                if debug:
-                    print("UID: %s, batch time: %s" % (uid, delta_time))
+                print("UID: %s, batch time: %s" % (uid, delta_time))
                 is_print_iter = int(iterations) % print_iterations == 0
                 if slow:
                     is_print_iter = epoch % print_iterations == 0
