@@ -110,18 +110,18 @@ def optimize(content_targets, style_target, content_weight, style_weight,
             iterations = 0
             while iterations * batch_size < num_examples:
                 time_remaining = delta_time * (total_iterations - iterations_completed)
-                print("Epoch %d/%d iteration %d/%d (total: %d/%d).  %0.2f hours left" 
+                print("Epoch %d/%d iteration %d/%d (completed: %d/%d @ %s).  %0.2f hours left" 
                       % (epoch + 1, epochs,
                          iterations + 1, iterations_per_epoch,
                          iterations_completed, total_iterations,
+                         delta_time,
                          time_remaining / (60 * 60) * 1.0))
-               
+
                 start_time = time.time()
                 curr = iterations * batch_size
                 step = curr + batch_size
                 X_batch = np.zeros(batch_shape, dtype=np.float32)
                 for j, img_p in enumerate(content_targets[curr:step]):
-                   print("adding image to batch: %s" % img_p) 
                    X_batch[j] = get_img(img_p, (256,256,3)).astype(np.float32)
 
                 iterations += 1
@@ -135,7 +135,6 @@ def optimize(content_targets, style_target, content_weight, style_weight,
                 train_step.run(feed_dict=feed_dict)
                 end_time = time.time()
                 delta_time = end_time - start_time
-                print("UID: %s, batch time: %s" % (uid, delta_time))
                 is_print_iter = int(iterations) % print_iterations == 0
                 if slow:
                     is_print_iter = epoch % print_iterations == 0
