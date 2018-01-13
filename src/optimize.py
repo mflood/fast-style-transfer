@@ -30,26 +30,20 @@ def optimize(content_targets, style_target, content_weight, style_weight,
     print("style_shape is", style_shape)
 
     # precompute style features
-    print("precomputing style features")
+    print("Precomputing style features")
     with tf.Graph().as_default(), tf.device('/cpu:0'), tf.Session() as sess:
-        print("Creating style_image")
         style_image = tf.placeholder(tf.float32, shape=style_shape, name='style_image')
-        print("doing preprocess")
         style_image_pre = vgg.preprocess(style_image)
-        print("calc net")
         net = vgg.net(vgg_path, style_image_pre)
         style_pre = np.array([style_target])
         for layer in STYLE_LAYERS:
-            print("eval...")
             features = net[layer].eval(feed_dict={style_image:style_pre})
-            print("reshape...")
             features = np.reshape(features, (-1, features.shape[3]))
-            print("matmul...")
             gram = np.matmul(features.T, features) / features.size
             style_features[layer] = gram
 
 
-    print("Computing content featuers")
+    print("Computing content features")
     with tf.Graph().as_default(), tf.Session() as sess:
         X_content = tf.placeholder(tf.float32, shape=batch_shape, name="X_content")
         X_pre = vgg.preprocess(X_content)
@@ -104,18 +98,34 @@ def optimize(content_targets, style_target, content_weight, style_weight,
         import random
         uid = random.randint(1, 100)
         print("UID: %s" % uid)
+        delta_time = 60
+        num_examples = len(content_targets)
+        iterations_per_epoch = num_examples / batch_size
+        total_iterations = iterations_per_epoch * epochs
+        iterations_completed = 0
+
         for epoch in range(epochs):
-            num_examples = len(content_targets)
+            print("Starting epoch %d of %d" % (epoch + 1, epochs))
+           
             iterations = 0
             while iterations * batch_size < num_examples:
+                time_remaining = delta_time * (total_iterations - iterations_completed)
+                print("Epoch %d/%d iteration %d/%d (total: %d/%d).  %0.2f hours left" 
+                      % (epoch + 1, epochs,
+                         iterations + 1, iterations_per_epoch,
+                         iterations_completed, total_iterations,
+                         time_remaining / (60 * 60) * 1.0))
+               
                 start_time = time.time()
                 curr = iterations * batch_size
                 step = curr + batch_size
                 X_batch = np.zeros(batch_shape, dtype=np.float32)
                 for j, img_p in enumerate(content_targets[curr:step]):
+                   print("adding image to batch: %s" % img_p) 
                    X_batch[j] = get_img(img_p, (256,256,3)).astype(np.float32)
 
                 iterations += 1
+                iterations_completed += 1
                 assert X_batch.shape[0] == batch_size
 
                 feed_dict = {
