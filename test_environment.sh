@@ -7,11 +7,9 @@ source activate style-transfer
 
 function test_apply() {
     echo "Applying style to test image"
+    mkdir -p applied_output
     python evaluate.py --checkpoint styles/rain-princess.ckpt --in-path examples/content/chicago.jpg --out-path ./applied_output/rain-princess-chicago.jpg
-    }
-
-
-
+}
 
 function setup_train() {
     echo "Setting up small data test set"
@@ -20,7 +18,6 @@ function setup_train() {
     mkdir -p data/small_train
     cp data/train2014/COCO_train2014_0000001111*.jpg data/small_train
 }
-
 
 function test_train() {
     echo "Trying to train a test style"
