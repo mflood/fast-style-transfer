@@ -13,7 +13,7 @@ function test_apply() {
 
 
 
-function_setup_train() {
+function setup_train() {
     echo "Setting up small data test set"
     mkdir -p style_output/test_checkpoint
     mkdir -p test_output
@@ -34,5 +34,6 @@ function test_train() {
     --batch-size 4
 }
 
-
+test_apply
+setup_train
 test_train
