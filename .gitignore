@@ -1,4 +1,5 @@
 *.pyc
 style_output/test_checkpoint
 test_output
+applied_output
 data
