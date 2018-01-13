@@ -114,7 +114,9 @@ def main():
     options = parser.parse_args()
     check_opts(options)
 
+    print("loading style_target...") 
     style_target = get_img(options.style)
+    print("done.") 
     if not options.slow:
         content_targets = _get_files(options.train_path)
     elif options.test:
@@ -144,6 +146,7 @@ def main():
         options.vgg_path
     ]
 
+    print("Dropping into optimize")
     for preds, losses, i, epoch in optimize(*args, **kwargs):
         style_loss, content_loss, tv_loss, loss = losses
 
