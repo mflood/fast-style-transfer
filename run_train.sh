@@ -3,8 +3,11 @@
 MY_STYLE_NAME=flood_test
 TRAINING_IMAGE=train_input/training_image.jpg
 
-echo "Activating style-transfer env"
-source activate style-transfer
+#echo "Activating style-transfer env"
+#source activate style-transfer
+
+echo "Activating tensorflow env"
+source activate tensorflow_p27
 
 function setup_train() {
     echo "Setting up train directories"
@@ -21,7 +24,7 @@ function train() {
     --test-dir test_output \
     --content-weight 1.5e1 \
     --checkpoint-iterations 1000 \
-    --batch-size 8
+    --batch-size 4
 }
 
 setup_train
